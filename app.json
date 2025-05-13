@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "GD Employee Tracking System",
+    "slug": "gd-employee-tracking-system",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/ICON.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/ICON.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/ICON.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/ICON.png"
+    },
+    "extra": {
+"apiUrl": "https://gd-ets-backend.onrender.com"
+}
+  }
+}
