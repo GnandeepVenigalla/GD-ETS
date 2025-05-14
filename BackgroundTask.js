@@ -24,7 +24,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   console.log('📍 Background location:', coords);
 
   try {
-    await axios.post('"https://gd-ets-backend.onrender.com/api/location/update', {
+    await axios.post('https://gd-ets-backend.onrender.com/api/location/update', {
       employeeId,
       latitude: coords.latitude,
       longitude: coords.longitude,

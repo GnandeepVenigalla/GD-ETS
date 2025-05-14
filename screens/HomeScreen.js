@@ -3,10 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment-timezone';
-import { getTodayAttendance } from '../services/attendanceService';
-import Constants from 'expo-constants';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = "https://gd-ets-backend.onrender.com";
 
 export default function HomeScreen({ navigation }) {
   const [officeName, setOfficeName] = useState('Loading...');
@@ -25,12 +23,6 @@ export default function HomeScreen({ navigation }) {
       const token = await AsyncStorage.getItem('token');
       const employeeId = await AsyncStorage.getItem('employeeId');
 
-      if (!token) {
-        Alert.alert('Authentication Error', 'No token found, please login again.');
-        setLoading(false);
-        return;
-      }
-
       // Fetch user profile
       const profileRes = await axios.get(`${BASE_URL}/api/employee/profile`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -39,7 +31,6 @@ export default function HomeScreen({ navigation }) {
       const office = profileRes.data.workplaces[0];
       if (!office) {
         Alert.alert('No Office Set', 'Please set your workplace location in settings.');
-        setLoading(false);
         return;
       }
 
@@ -47,19 +38,25 @@ export default function HomeScreen({ navigation }) {
       setOfficeName(locationName);
 
       const timestamp = Math.floor(Date.now() / 1000); // current time in seconds
-      const googleKey = (process.env.Google_APT_KEY); // ⬅️ Replace with your actual Google API key
+const googleKey = (process.env.Google_APT_KEY); // ⬅️ Replace with your actual Google API key
 
-      const timeRes = await axios.get(
-        `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${timestamp}&key=${googleKey}`
-      );
+const timeRes = await axios.get(
+  `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${timestamp}&key=${googleKey}`
+);
 
-      const timezone = timeRes.data.timeZoneId || 'UTC';
+
+      
+const timezone = timeRes.data.timeZoneId || 'UTC';
       setOfficeTimezone(timezone);
       setOfficeTime(moment().tz(timezone).format('hh:mm A'));
 
-      // Fetch today's attendance using attendanceService with token
-      const data = await getTodayAttendance(employeeId, token);
+      // Fetch today's attendance
+      const attendanceRes = await axios.get(`${BASE_URL}/api/attendance/today`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { employeeId }
+      });
 
+      const data = attendanceRes.data;
       setTodayHours(data.totalHoursWorked || 0);
       setTodayEarnings(data.earnedToday || 0);
     } catch (err) {

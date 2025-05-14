@@ -2,7 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.manifest?.extra?.apiUrl || Constants.expoConfig?.extra?.apiUrl || 'https://gd-ets-backend.onrender.com';
+const API_URL = 'https://gd-ets-backend.onrender.com';
 
 console.log('API_URL:', API_URL);
 

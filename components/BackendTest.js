@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.manifest?.extra?.apiUrl || Constants.expoConfig?.extra?.apiUrl || 'https://gd-ets-backend.onrender.com';
+const API_URL ='https://gd-ets-backend.onrender.com';
 
 export default function BackendTest() {
   const [response, setResponse] = useState(null);

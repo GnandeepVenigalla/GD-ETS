@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = `https://gd-ets-backend.onrender.com`;
 
 export default function ProfileScreen({ navigation }) {
   const [profile, setProfile] = useState({ name: '', phone: '', address: '' });

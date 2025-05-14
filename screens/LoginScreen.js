@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from 'expo-constants';
-
-const BASE_URL = process.env.REACT_APP_API_URL;
+import { loginUser } from '../services/authService';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -12,50 +9,96 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/login`, { email, password }, { timeout: 15000 });
-      const { token, employeeId } = res.data;
-
-      await AsyncStorage.setItem('token', token);
-      await AsyncStorage.setItem('employeeId', employeeId);
-
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      Alert.alert('Login Failed', 'Invalid email or password.');
+      console.log('Attempting login with:', email, password);
+      const data = await loginUser(email, password);
+      console.log('Login response:', data);
+      await AsyncStorage.setItem('token', data.token);
+      await AsyncStorage.setItem('employeeId', data.employeeId);
+      console.log('Stored token and employeeId, navigating to Home');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    } catch (err) {
+      if (err.response) {
+        console.error('Login error response:', err.response.data);
+        alert(`Login Failed: ${err.response.data.message || 'Please check your credentials.'}`);
+      } else if (err.request) {
+        console.error('Login error request:', err.request);
+        alert('Login Failed: No response from server. Please check your network connection.');
+      } else {
+        console.error('Login error:', err.message);
+        alert('Login Failed. Please check your credentials.');
+      }
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Login</Text>
+      <Text style={styles.logo}>GD ETS</Text>
+
       <TextInput
-        placeholder="Email"
+        style={styles.input}
+        placeholder="Email Address"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
         keyboardType="email-address"
         autoCapitalize="none"
       />
       <TextInput
+        style={styles.input}
         placeholder="Password"
         value={password}
-        onChangeText={setPassword}
-        style={styles.input}
         secureTextEntry
+        onChangeText={setPassword}
       />
-      <Button title="Login" onPress={handleLogin} />
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>LOG IN</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+        <Text style={styles.linkText}>Don't have an account? Sign up here</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 6,
+  container: {
+    flex: 1,
+    padding: 30,
+    justifyContent: 'center',
+    backgroundColor: '#f6f9ff'
   },
+  logo: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 40,
+    textAlign: 'center',
+    color: '#1e3a8a'
+  },
+  input: {
+    backgroundColor: 'white',
+    padding: 12,
+    marginBottom: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc'
+  },
+  button: {
+    backgroundColor: '#1e3a8a',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center'
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold'
+  },
+  linkText: {
+    marginTop: 20,
+    color: '#1e3a8a',
+    textAlign: 'center'
+  }
 });
