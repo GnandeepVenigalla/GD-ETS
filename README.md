@@ -54,3 +54,6 @@ GD Employee Tracking System is a React Native mobile application built with Expo
 
 ## License
 This project is licensed under the MIT License.
+
+## Picture 
+![image]([https://user-images.githubusercontent.com/104444/144111111-5a4a8d3f-8a4f-4a3f-9a4f-8a4f-5a4f.png](https://github.com/GnandeepVenigalla/GD-ETS/blob/main/assets/6D44DC9B-A300-4762-89A1-1C9F11166EBA.png))
